@@ -48,7 +48,7 @@ abstract class Repository extends OriginalBaseRepository
         $this->joins = $joins;
     }
 
-    public function rules($values){
+    public function rules($values, $id = null){
         return [];
     }
 
