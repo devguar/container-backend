@@ -8,9 +8,6 @@
 
 namespace Devguar\OContainer\Tests;
 
-use App\User;
-
-
 class TestHelper
 {
     static public function lastRecord($model){
@@ -38,7 +35,7 @@ class TestHelper
     }
 
     static public function loggedUser(){
-        $user = \App\Models\Usuario::first();
+        $user = \App\Models\Usuario\Usuario::first();
         return $user;
     }
 }
