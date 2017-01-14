@@ -36,9 +36,9 @@ class Order implements CriteriaInterface {
         if ($this->campo){
             $field = $this->campo;
 
-            if (strpos($field,'.') === false){
-                $field = $table.'.'.$field;
-            }
+//            if (strpos($field,'.') === false){
+//                $field = $table.'.'.$field;
+//            }
 
             if ($this->ordem){
                 $model = $model->orderBy($field,$this->ordem);
