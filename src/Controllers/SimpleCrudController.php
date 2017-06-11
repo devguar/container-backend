@@ -3,6 +3,7 @@
 namespace Devguar\OContainer\Controllers;
 
 use App\Http\Controllers\Controller as OriginalController;
+use Devguar\OContainer\Permissions\PermissionsControl;
 use Devguar\OContainer\Repositories\Criteria\Miscellaneous\FiltroFalso;
 use Illuminate\Http\Request;
 use Devguar\OContainer\Repositories\Criteria\BootstrapTable;
@@ -14,6 +15,8 @@ abstract class SimpleCrudController extends OriginalController
 {
     private $repository = null;
     private $viewsfolder = null;
+
+    public $rule;
 
     /**
      * @return null
@@ -55,13 +58,8 @@ abstract class SimpleCrudController extends OriginalController
 
     public function index()
     {
+        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
         return $this->loadViewIndex();
-    }
-
-    private function verificarPermissao($acao){
-        if (false){//($this->viewsfolder.'-'.$acao)) {
-            abort(403,'Sem permissão para acessar esta página.');
-        }
     }
 
     public function loadViewIndex(){
@@ -69,9 +67,9 @@ abstract class SimpleCrudController extends OriginalController
     }
 
     public function listcontent(){
-        try{
-            $this->verificarPermissao('retrieve');
+        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
 
+        try{
             $search = isset($_GET['search']) ? $_GET['search'] : null;
             $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
             $order = isset($_GET['order']) ? $_GET['order'] : null;
@@ -106,9 +104,9 @@ abstract class SimpleCrudController extends OriginalController
 
     public function create()
     {
-        try{
-            $this->verificarPermissao('create');
+        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
 
+        try{
             return $this->loadViewCreate();
         }catch(Exception $e){
             \Log::error(\Route::getCurrentRoute()->getActionName(), ['message' => $e->getMessage(), 'trace' => $e->getTrace()]);
@@ -123,9 +121,9 @@ abstract class SimpleCrudController extends OriginalController
 
     public function edit($id)
     {
-        try{
-            $this->verificarPermissao('update');
+        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
 
+        try{
             $object = $this->repository->find($id);
 
             if (!isset($object->id))
@@ -146,6 +144,8 @@ abstract class SimpleCrudController extends OriginalController
 
     public function store(Request $request, $id = null)
     {
+        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
+        
         $this->validate($request, $this->repository->rules($request->all(), $id));
         return $this->doStore($request,$id);
     }
@@ -154,9 +154,9 @@ abstract class SimpleCrudController extends OriginalController
 
     public function delete($id)
     {
+        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
+        
         try{
-            $this->verificarPermissao('delete');
-
             $object = $this->repository->find($id);
 
             if (!isset($object->id))
@@ -176,10 +176,9 @@ abstract class SimpleCrudController extends OriginalController
     }
 
     public function autocomplete(){
+        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
+        
         try{
-            $this->verificarPermissao('retrieve');
-//            \DB::connection()->enableQueryLog();
-
             $termo = (isset($_GET["termo"]) ? $_GET["termo"] : null);
 
             $this->repository->pushCriteria(new FiltroFalso());
@@ -189,9 +188,6 @@ abstract class SimpleCrudController extends OriginalController
             $this->repository->pushCriteria(new BootstrapTable\Search($termo));
 
             $rows = $this->repository->all();
-
-//                    $queries = \DB::getQueryLog();
-//        print_r($queries);
 
             return $this->formatautocomplete($rows);
         }catch(Exception $e){
