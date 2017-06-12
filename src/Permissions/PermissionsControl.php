@@ -14,21 +14,25 @@ class PermissionsControl
 
     public static function hasPermission($ruleClass, $model = null)
     {
-        if (is_array($ruleClass)){
-            foreach ($ruleClass as $oneRule){
-                $rule = new $oneRule;
-                $rule->model = $model;
+        return self::testRule($ruleClass, $model);
+    }
 
-                if (!$rule->test()){
-                    self::$errorMessage = $rule->getErrorMessage();
+    private static function testRule($className, $model){
+        if (is_array($className)){
+            foreach ($className as $oneRule){
+                $valid = self::testRule($oneRule, $model);
+
+                if (!$valid){
                     return false;
                 }
             }
 
             return true;
         }else{
-            $rule = new $ruleClass;
+            $rule = new $className;
             $rule->model = $model;
+
+            //echo 'regra: '.$className.'<br/>';
 
             self::$errorMessage = $rule->getErrorMessage();
             return $rule->test();
@@ -37,7 +41,7 @@ class PermissionsControl
 
     public static function hasPermissionOrAbort($ruleClass, $model = null)
     {
-        if (!self::hasPermission($ruleClass)){
+        if (!self::hasPermission($ruleClass,$model)){
             abort('403',self::$errorMessage);
         }
     }
