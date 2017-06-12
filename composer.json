@@ -1,0 +1,32 @@
+{
+    "name": "devguar/package-ocontainer-backend",
+    "description": "Pacote backend OContainer",
+    "keywords": [
+        "devguar",
+        "package-ocontainer-backend"
+    ],
+    "homepage": "https://bitbucket.org/devguar/package-ocontainer-backend",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lucas Guarnieri",
+            "email": "lucasguarni@hotmail.com"
+        }
+    ],
+    "require": {
+        "php" : ">=5.5.0"
+    },
+    "require-dev": {
+        
+    },
+    "autoload": {
+        "psr-4": {
+            "Devguar\\OContainer\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            
+        }
+    }
+}
