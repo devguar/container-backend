@@ -16,8 +16,6 @@ abstract class SimpleCrudController extends OriginalController
     private $repository = null;
     private $viewsfolder = null;
 
-    public $rule;
-
     /**
      * @return null
      */
@@ -58,7 +56,6 @@ abstract class SimpleCrudController extends OriginalController
 
     public function index()
     {
-        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
         return $this->loadViewIndex();
     }
 
@@ -67,8 +64,6 @@ abstract class SimpleCrudController extends OriginalController
     }
 
     public function listcontent(){
-        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
-
         try{
             $search = isset($_GET['search']) ? $_GET['search'] : null;
             $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
@@ -104,8 +99,6 @@ abstract class SimpleCrudController extends OriginalController
 
     public function create()
     {
-        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
-
         try{
             return $this->loadViewCreate();
         }catch(Exception $e){
@@ -121,8 +114,6 @@ abstract class SimpleCrudController extends OriginalController
 
     public function edit($id)
     {
-        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
-
         try{
             $object = $this->repository->find($id);
 
@@ -144,8 +135,6 @@ abstract class SimpleCrudController extends OriginalController
 
     public function store(Request $request, $id = null)
     {
-        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
-        
         $this->validate($request, $this->repository->rules($request->all(), $id));
         return $this->doStore($request,$id);
     }
@@ -154,8 +143,6 @@ abstract class SimpleCrudController extends OriginalController
 
     public function delete($id)
     {
-        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
-        
         try{
             $object = $this->repository->find($id);
 
@@ -176,8 +163,6 @@ abstract class SimpleCrudController extends OriginalController
     }
 
     public function autocomplete(){
-        if ($this->rule) PermissionsControl::hasPermissionOrAbort($this->rule);
-        
         try{
             $termo = (isset($_GET["termo"]) ? $_GET["termo"] : null);
 
