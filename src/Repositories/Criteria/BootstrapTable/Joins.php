@@ -23,16 +23,23 @@ class Joins implements CriteriaInterface {
         $table_from = $model->getModel()->getTable();
 
         foreach($joins as $join => $details) {
+            $foreign_field = 'id';
+
             if (is_array($details)){
                 $field = $details['field'];
                 $table = $details['table'];
+                $foreign_field = $details['field_foreign'];
                 $table = $table.' as '.$join;
             }else{
                 $field = $details;
                 $table = $join;
             }
 
-            $model->leftJoin($table, $table_from.'.'.$field, '=', $join.'.id');
+            if (strpos($field,'.') === false){
+                $field = $table_from.'.'.$field;
+            }
+
+            $model->leftJoin($table, $field, '=', $join.'.'.$foreign_field);
         }
 
         return $model;
