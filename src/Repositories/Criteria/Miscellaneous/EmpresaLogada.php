@@ -8,6 +8,7 @@
 
 namespace Devguar\OContainer\Repositories\Criteria\Miscellaneous;
 
+use Devguar\OContainer\Tests\TestHelper;
 use Prettus\Repository\Contracts\RepositoryInterface;
 use Prettus\Repository\Contracts\CriteriaInterface;
 
@@ -22,8 +23,14 @@ class EmpresaLogada implements CriteriaInterface {
      */
     public function apply($model, RepositoryInterface $repository)
     {
+        if (TestHelper::isRunningTests()){
+            $user = TestHelper::loggedUser();
+        }else{
+            $user = Auth::user();
+        }
+
         $table = $model->getModel()->getTable();
-        $model = $model->where($table.'.empresa_id', '=', Auth::user()->empresa_id);
+        $model = $model->where($table.'.empresa_id', '=', $user->empresa_id);
         return $model;
     }
 }

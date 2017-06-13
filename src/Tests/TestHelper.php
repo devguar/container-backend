@@ -38,4 +38,8 @@ class TestHelper
         $user = \App\Models\Usuario\Usuario::first();
         return $user;
     }
+
+    static public function isRunningTests(){
+        return (defined('PHPUNIT_RUNNINGTESTS') == 1);
+    }
 }
