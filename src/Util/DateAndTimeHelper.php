@@ -23,4 +23,9 @@ class DateAndTimeHelper
 
         return $day.' de '.self::monthName($month).' de '.$year;
     }
+
+    public static function daysOfWeekDescription(){
+        $dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+        return $dias;
+    }
 }
