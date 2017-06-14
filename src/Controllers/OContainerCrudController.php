@@ -2,16 +2,12 @@
 
 namespace Devguar\OContainer\Controllers;
 
-use App\Http\Controllers\Controller as OriginalController;
-use Devguar\OContainer\Permissions\PermissionsControl;
 use Devguar\OContainer\Repositories\Criteria\Miscellaneous\FiltroFalso;
 use Illuminate\Http\Request;
 use Devguar\OContainer\Repositories\Criteria\BootstrapTable;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Exception;
 
-abstract class SimpleCrudController extends OriginalController
+abstract class OContainerCrudController extends OContainerController
 {
     private $repository = null;
     private $viewsfolder = null;
