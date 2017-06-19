@@ -28,4 +28,31 @@ class DateAndTimeHelper
         $dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
         return $dias;
     }
+
+    //Converte 14/06/2017 em Datetime Object
+    public static function convertVisualToDatetime($dateVisual){
+        $datetime = new \DateTime();
+        $datetime = $datetime->createFromFormat('Y-m-d', $dateVisual);
+        return $datetime;
+    }
+
+    //Converte 2017-06-14 em Datetime Object
+    public static function convertDatabaseToDatetime($dateDatabase){
+        $datetime = new \DateTime();
+        $datetime = $datetime->createFromFormat('Y-m-d', $dateDatabase);
+        return $datetime;
+    }
+
+    //Converte 14/06/2017 em 2017-06-14
+    public static function convertVisualToDatabase($dateVisual){
+        $datetime = self::convertVisualToDatetime($dateVisual);
+        return $datetime->format('Y-m-d');
+    }
+
+    //Converte 2017-06-14 em 14/06/2017
+    public static function convertDatabaseToVisual($dateDatabase){
+        $datetime = self::convertVisualToDatetime($dateDatabase);
+        return $datetime->format("d/m/Y");
+    }
+
 }
