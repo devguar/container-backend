@@ -31,13 +31,17 @@ class DateAndTimeHelper
 
     //Converte 14/06/2017 em Datetime Object
     public static function convertVisualToDatetime($dateVisual){
+        if ($dateVisual == null) return null;
+
         $datetime = new \DateTime();
-        $datetime = $datetime->createFromFormat('Y-m-d', $dateVisual);
+        $datetime = $datetime->createFromFormat('d/m/Y', $dateVisual);
         return $datetime;
     }
 
     //Converte 2017-06-14 em Datetime Object
     public static function convertDatabaseToDatetime($dateDatabase){
+        if ($dateDatabase == null) return null;
+
         $datetime = new \DateTime();
         $datetime = $datetime->createFromFormat('Y-m-d', $dateDatabase);
         return $datetime;
@@ -45,14 +49,32 @@ class DateAndTimeHelper
 
     //Converte 14/06/2017 em 2017-06-14
     public static function convertVisualToDatabase($dateVisual){
+        if ($dateVisual == null) return null;
+
         $datetime = self::convertVisualToDatetime($dateVisual);
         return $datetime->format('Y-m-d');
     }
 
     //Converte 2017-06-14 em 14/06/2017
     public static function convertDatabaseToVisual($dateDatabase){
-        $datetime = self::convertVisualToDatetime($dateDatabase);
+        if ($dateDatabase == null) return null;
+
+        $datetime = self::convertDatabaseToDatetime($dateDatabase);
         return $datetime->format("d/m/Y");
+    }
+
+    //Converte Datetime Object em 14/06/2017
+    public static function convertDatetimeToVisual(\DateTime $dateTime){
+        if ($dateTime == null) return null;
+
+        return $dateTime->format("d/m/Y");
+    }
+
+    //Converte Datetime Object em 2017-06-14
+    public static function convertDatetimeToDatabase(\DateTime $dateTime){
+        if ($dateTime == null) return null;
+
+        return $dateTime->format('Y-m-d');
     }
 
 }
