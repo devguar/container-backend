@@ -9,6 +9,7 @@
 namespace Devguar\OContainer\Repositories\Criteria\Miscellaneous;
 
 use Devguar\OContainer\Tests\TestHelper;
+use Illuminate\Support\Facades\App;
 use Prettus\Repository\Contracts\RepositoryInterface;
 use Prettus\Repository\Contracts\CriteriaInterface;
 
@@ -23,7 +24,7 @@ class EmpresaLogada implements CriteriaInterface {
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        if (TestHelper::isRunningTests()){
+        if (App::environment('testing')){
             $user = TestHelper::loggedUser();
         }else{
             $user = Auth::user();

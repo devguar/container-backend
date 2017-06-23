@@ -8,6 +8,8 @@
 
 namespace Devguar\OContainer\Tests;
 
+use Illuminate\Support\Facades\App;
+
 class TestHelper
 {
     static public function lastRecord($model){
@@ -40,6 +42,6 @@ class TestHelper
     }
 
     static public function isRunningTests(){
-        return (defined('PHPUNIT_RUNNINGTESTS') == 1);
+        
     }
 }

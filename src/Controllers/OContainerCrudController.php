@@ -6,6 +6,7 @@ use Devguar\OContainer\Repositories\Criteria\Miscellaneous\FiltroFalso;
 use Illuminate\Http\Request;
 use Devguar\OContainer\Repositories\Criteria\BootstrapTable;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 abstract class OContainerCrudController extends OContainerController
 {
@@ -59,32 +60,48 @@ abstract class OContainerCrudController extends OContainerController
         return view($this->viewsfolder.'.index');
     }
 
+    public function mountListContentByRepository($repository){
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
+        $order = isset($_GET['order']) ? $_GET['order'] : null;
+        $limit = isset($_GET['limit']) ? $_GET['limit'] : null;
+        $offset = isset($_GET['offset']) ? $_GET['offset'] : null;
+
+        $repository->pushCriteria(new FiltroFalso());
+
+        $repository->pushCriteria(new BootstrapTable\Select());
+        $repository->pushCriteria(new BootstrapTable\Joins());
+        $repository->pushCriteria(new BootstrapTable\Search($search));
+        $repository->pushCriteria(new BootstrapTable\Order($sort, $order));
+
+        $return = new \stdClass();
+        $return->total = $repository->all()->count();
+
+        $repository->pushCriteria(new BootstrapTable\Pagination($limit, $offset));
+
+//        DB::enableQueryLog();
+
+        $return->rows = $repository->all();
+
+//        dd(DB::getQueryLog());
+
+        $return->success = true;
+
+        return $this->formatlistcontent($return);
+    }
+
     public function listcontent(){
         try{
-            $search = isset($_GET['search']) ? $_GET['search'] : null;
-            $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
-            $order = isset($_GET['order']) ? $_GET['order'] : null;
-            $limit = isset($_GET['limit']) ? $_GET['limit'] : null;
-            $offset = isset($_GET['offset']) ? $_GET['offset'] : null;
-
-            $this->repository->pushCriteria(new FiltroFalso());
-
-            $this->repository->pushCriteria(new BootstrapTable\Select());
-            $this->repository->pushCriteria(new BootstrapTable\Joins());
-            $this->repository->pushCriteria(new BootstrapTable\Search($search));
-            $this->repository->pushCriteria(new BootstrapTable\Order($sort, $order));
-
-            $return = new \stdClass();
-            $return->total = $this->repository->all()->count();
-
-            $this->repository->pushCriteria(new BootstrapTable\Pagination($limit, $offset));
-            $return->rows = $this->repository->all();
-
-            $return->success = true;
-
-            return $this->formatlistcontent($return);
+            return $this->mountListContentByRepository($this->repository);
         }catch(Exception $e){
-            \Log::error(\Route::getCurrentRoute()->getActionName(), ['message' => $e->getMessage(), 'trace' => $e->getTrace()]);
+            return $e->getMessage();
+        }
+    }
+
+    public function listcontentByRepository($repository){
+        try{
+            return $this->mountListContentByRepository($repository);
+        }catch(Exception $e){
             return $e->getMessage();
         }
     }
@@ -98,7 +115,6 @@ abstract class OContainerCrudController extends OContainerController
         try{
             return $this->loadViewCreate();
         }catch(Exception $e){
-            \Log::error(\Route::getCurrentRoute()->getActionName(), ['message' => $e->getMessage(), 'trace' => $e->getTrace()]);
             return view('errors.custom')->withException($e);
         }
     }
