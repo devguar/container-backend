@@ -52,8 +52,8 @@ class PermissionsControl
 
             //echo 'regra: '.$className.'<br/>';
 
-            self::$errorMessage = $rule->getErrorMessage();
             if (!$rule->test()){
+                self::$errorMessage = $rule->getErrorMessage();
                 return false;
             }
         }

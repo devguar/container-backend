@@ -23,4 +23,8 @@ abstract class AbstractRule
     public function getErrorMessage(){
         return $this->errorMessage;
     }
+
+    public function setErrorMessage($error){
+        $this->errorMessage = $error;
+    }
 }
