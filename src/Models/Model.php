@@ -37,7 +37,7 @@ abstract class Model extends OriginalModel
         // after save code
     }
 
-    public static function formatInline($id = null){
+    public static function formatInline($id){
         $object = self::find($id);
         return $object->nome;
     }
