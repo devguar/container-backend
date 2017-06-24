@@ -36,4 +36,9 @@ abstract class Model extends OriginalModel
         parent::save();
         // after save code
     }
+
+    public static function formatInline($id = null){
+        $object = self::find($id);
+        return $object->nome;
+    }
 }
