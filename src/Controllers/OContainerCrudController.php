@@ -107,7 +107,27 @@ abstract class OContainerCrudController extends OContainerController
     }
 
     public function formatlistcontent($content){
+        $rows = array();
+
+        foreach($content->rows as $row){
+            $actions = $this->listActions($row);
+
+            if (count($actions) > 0){
+                $row->actions = implode(" ", $actions);
+            }else{
+                $row->actions = null;
+            }
+
+            $rows[] = $row;
+        }
+
+        $content->rows = $rows;
+
         return response()->json($content);
+    }
+
+    public function listActions($row){
+        return null;
     }
 
     public function create()
