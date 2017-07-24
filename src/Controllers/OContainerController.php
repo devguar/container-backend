@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 abstract class OContainerController extends OriginalController
 {
     public function messageSuccessURL($message, $url){
-        $this->messageSuccess('<a href="'.$url.'" class="mask-tooltip" title="Visualizar">'.$message.' <span class="glyphicon glyphicon-zoom-in"></span></a>');
+        $this->messageSuccess('<a href="'.$url.'" class="mask-tooltip" title="Visualizar">'.$message.'</a>');
     }
 
     public function messageSuccess($message){
