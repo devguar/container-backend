@@ -15,7 +15,8 @@
     ],
     "require": {
         "php" : ">=5.5.0",
-		"prettus/l5-repository": "^2.6"
+		"prettus/l5-repository": "^2.6",
+        "maknz/slack": "^1.7"
     },
     "require-dev": {
         

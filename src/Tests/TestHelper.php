@@ -37,7 +37,8 @@ class TestHelper
     }
 
     static public function loggedUser(){
-        $user = \App\Models\Usuario\Usuario::first();
+        $empresa = \App\Models\Configuracoes\Empresa::orderBy('id','desc')->first();
+        $user = $empresa->usuarios->first();
         return $user;
     }
 
