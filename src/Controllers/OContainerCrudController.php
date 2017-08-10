@@ -60,7 +60,10 @@ abstract class OContainerCrudController extends OContainerController
         return view($this->viewsfolder.'.index');
     }
 
-    public function mountListContentByRepository($repository){
+
+
+    public function getListContentByRepository($repository)
+    {
         $search = isset($_GET['search']) ? $_GET['search'] : null;
         $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
         $order = isset($_GET['order']) ? $_GET['order'] : null;
@@ -87,6 +90,11 @@ abstract class OContainerCrudController extends OContainerController
 
         $return->success = true;
 
+        return $return;
+    }
+
+    public function mountListContentByRepository($repository){
+        $return = $this->getListContentByRepository($repository);
         return $this->formatlistcontent($return);
     }
 
