@@ -12,10 +12,15 @@ use Maknz\Slack\Client as SlackClient;
 
 class Slack
 {
-    public static function send($hookUrl, $message){
+    public static function send($hookUrl, $message, $anexo = null){
         if ($hookUrl){
             $client = new SlackClient($hookUrl);
-            $client->send($message);
+
+            if ($anexo){
+                $client->attach(['text' => $anexo])->send($message);;
+            }else{
+                $client->send($message);
+            }
         }
     }
 }
