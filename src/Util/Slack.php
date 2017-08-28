@@ -16,9 +16,26 @@ class Slack
         if ($hookUrl){
             $client = new SlackClient($hookUrl);
 
-            if ($anexo){
-                $client->attach(['text' => $anexo])->send($message);;
-            }else{
+            $attachment = array();
+
+            if ($anexo) {
+                $attachment = array('text' => $anexo);
+            }
+
+            $user = \Auth::user();
+            if ($user){
+                $attachment['author_name'] = $user->nome.' - '.$user->empresa->razao_social;
+            }
+
+            //dd($hookUrl);
+            //dd($attachment);
+
+            if (count($attachment) > 0)
+            {
+                $client->attach($attachment)->send($message);;
+            }
+            else
+            {
                 $client->send($message);
             }
         }
