@@ -2,6 +2,7 @@
 
 namespace Devguar\OContainer\Controllers;
 
+use Devguar\OContainer\Exceptions\InvalidArgumentException;
 use Devguar\OContainer\Repositories\Criteria\Miscellaneous\FiltroFalso;
 use Illuminate\Http\Request;
 use Devguar\OContainer\Repositories\Criteria\BootstrapTable;
@@ -158,7 +159,7 @@ abstract class OContainerCrudController extends OContainerController
             $object = $this->repository->find($id);
 
             if (!isset($object->id))
-                throw new Exception("Registro não encontrada para edição.");
+                throw new InvalidArgumentException("Registro não encontrada para edição.");
 
             return $this->loadViewEdit($object);
         }catch(Exception $e){
@@ -187,7 +188,7 @@ abstract class OContainerCrudController extends OContainerController
             $object = $this->repository->find($id);
 
             if (!isset($object->id))
-                throw new Exception("Registro não encontrada para exclusão.");
+                throw new InvalidArgumentException("Registro não encontrada para exclusão.");
 
             return $this->doDelete($id);
         }catch(Exception $e){
