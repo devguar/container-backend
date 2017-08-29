@@ -16,7 +16,8 @@
     "require": {
         "php" : ">=5.5.0",
 		"prettus/l5-repository": "^2.6",
-        "maknz/slack": "^1.7"
+        "maknz/slack": "^1.7",
+        "owen-it/laravel-auditing": "^4.1"
     },
     "require-dev": {
         
