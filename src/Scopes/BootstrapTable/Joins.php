@@ -6,21 +6,25 @@
  * Time: 13:27
  */
 
-namespace Devguar\OContainer\Repositories\Criteria\BootstrapTable;
+namespace Devguar\OContainer\Scopes\BootstrapTable;
 
-use Prettus\Repository\Contracts\RepositoryInterface;
-use Prettus\Repository\Contracts\CriteriaInterface;
+use Devguar\OContainer\Repositories\Repository;
+use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
-class Joins implements CriteriaInterface {
-    /**
-     * @param $model
-     * @param RepositoryInterface $repository
-     * @return mixed
-     */
-    public function apply($model, RepositoryInterface $repository)
+class Joins implements Scope {
+    private $repository;
+
+    public function __construct(Repository $repository)
     {
-        $joins = $repository->getJoins();
-        $table_from = $model->getModel()->getTable();
+        $this->repository = $repository;
+    }
+
+    public function apply(Builder $builder, Model $model)
+    {
+        $joins = $this->repository->joins();
+        $table_from = $model->getTable();
 
         foreach($joins as $join => $details) {
             $foreign_field = 'id';
@@ -39,9 +43,7 @@ class Joins implements CriteriaInterface {
                 $field = $table_from.'.'.$field;
             }
 
-            $model->leftJoin($table, $field, '=', $join.'.'.$foreign_field);
+            $builder->leftJoin($table, $field, '=', $join.'.'.$foreign_field);
         }
-
-        return $model;
     }
 }

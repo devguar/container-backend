@@ -8,20 +8,43 @@
 
 namespace Devguar\OContainer\Models;
 
+use Devguar\OContainer\Scopes\Miscellaneous\EmpresaLogada;
 use Illuminate\Database\Eloquent\Model as OriginalModel;
 use Illuminate\Support\Facades\Auth;
 
 abstract class Model extends OriginalModel
 {
     protected $hasCompanyId = false;
+    protected $fieldSearchable = [];
+    protected $joins = [];
 
-    /**
-     * @return boolean
-     */
+//    /**
+//     * Model constructor.
+//     */
+//    public function __construct()
+//    {
+//        if (self::hasCompanyId()){
+//            static::addGlobalScope(new EmpresaLogada());
+//        }
+//
+//        parent::__construct();
+//    }
+
     public function hasCompanyId()
     {
         return $this->hasCompanyId;
     }
+
+    public function getFieldsSearchable()
+    {
+        return $this->fieldSearchable;
+    }
+
+    public function getJoins()
+    {
+        return $this->joins;
+    }
+
 
     public function save(array $options = [])
     {

@@ -3,9 +3,10 @@
 namespace Devguar\OContainer\Controllers;
 
 use Devguar\OContainer\Exceptions\InvalidArgumentException;
-use Devguar\OContainer\Repositories\Criteria\Miscellaneous\FiltroFalso;
+use Devguar\OContainer\Repositories\Repository;
+use Devguar\OContainer\Scopes\Miscellaneous\FiltroFalso;
 use Illuminate\Http\Request;
-use Devguar\OContainer\Repositories\Criteria\BootstrapTable;
+use Devguar\OContainer\Scopes\BootstrapTable;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -33,7 +34,7 @@ abstract class OContainerCrudController extends OContainerController
     /**
      * @return null
      */
-    public function getRepository()
+    public function getRepository() : Repository
     {
         return $this->repository;
     }
@@ -61,8 +62,6 @@ abstract class OContainerCrudController extends OContainerController
         return view($this->viewsfolder.'.index');
     }
 
-
-
     public function getListContentByRepository($repository)
     {
         $search = isset($_GET['search']) ? $_GET['search'] : null;
@@ -71,24 +70,9 @@ abstract class OContainerCrudController extends OContainerController
         $limit = isset($_GET['limit']) ? $_GET['limit'] : null;
         $offset = isset($_GET['offset']) ? $_GET['offset'] : null;
 
-        $repository->pushCriteria(new FiltroFalso());
-
-        $repository->pushCriteria(new BootstrapTable\Select());
-        $repository->pushCriteria(new BootstrapTable\Joins());
-        $repository->pushCriteria(new BootstrapTable\Search($search));
-        $repository->pushCriteria(new BootstrapTable\Order($sort, $order));
-
         $return = new \stdClass();
-        $return->total = $repository->all()->count();
-
-        $repository->pushCriteria(new BootstrapTable\Pagination($limit, $offset));
-
-//        DB::enableQueryLog();
-
-        $return->rows = $repository->all();
-
-//        dd(DB::getQueryLog());
-
+        $return->total = 0;
+        $return->rows = $repository->bootstrapTable($search, $sort, $order, $limit, $offset, $return->total);
         $return->success = true;
 
         return $return;
@@ -207,11 +191,10 @@ abstract class OContainerCrudController extends OContainerController
         try{
             $termo = (isset($_GET["termo"]) ? $_GET["termo"] : null);
 
-            $this->repository->pushCriteria(new FiltroFalso());
-
-            $this->repository->pushCriteria(new BootstrapTable\Select());
-            $this->repository->pushCriteria(new BootstrapTable\Joins());
-            $this->repository->pushCriteria(new BootstrapTable\Search($termo));
+            $this->repository->addQueryScope(new FiltroFalso());
+            $this->repository->addQueryScope(new BootstrapTable\Select($this->getRepository()));
+            $this->repository->addQueryScope(new BootstrapTable\Joins($this->getRepository()));
+            $this->repository->addQueryScope(new BootstrapTable\Search($this->getRepository(), $termo));
 
             $rows = $this->repository->all();
 

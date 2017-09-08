@@ -6,34 +6,30 @@
  * Time: 13:27
  */
 
-namespace Devguar\OContainer\Repositories\Criteria\BootstrapTable;
+namespace Devguar\OContainer\Scopes\BootstrapTable;
 
-use Prettus\Repository\Contracts\RepositoryInterface;
-use Prettus\Repository\Contracts\CriteriaInterface;
+use Devguar\OContainer\Repositories\Repository;
+use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
-class Search implements CriteriaInterface {
+class Search implements Scope {
+    private $repository;
     private $search;
 
-    /**
-     * Paginacao constructor.
-     */
-    public function __construct($search)
+    public function __construct(Repository $repository, string $search = null)
     {
+        $this->repository = $repository;
         $this->search = $search;
     }
 
-    /**
-     * @param $model
-     * @param RepositoryInterface $repository
-     * @return mixed
-     */
-    public function apply($model, RepositoryInterface $repository)
+    public function apply(Builder $builder, Model $model)
     {
         if ($this->search){
-            $table = $model->getModel()->getTable();
-            $fieldsSearchable = $repository->getFieldsSearchable();
+            $table = $model->getTable();
+            $fieldsSearchable = $this->repository->searchableFields();
 
-            $model->where(function($queryContainer) use ($fieldsSearchable, $table){
+            $builder->where(function($queryContainer) use ($fieldsSearchable, $table){
                 $primeiroFiltro = true;
 
                 foreach ($fieldsSearchable as $field => $condition){
@@ -62,7 +58,5 @@ class Search implements CriteriaInterface {
                 }
             });
         }
-
-        return $model;
     }
 }
