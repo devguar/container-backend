@@ -8,32 +8,16 @@
 
 namespace Devguar\OContainer\Models;
 
+use Devguar\OContainer\Exceptions\InvalidConfigurationException;
 use Devguar\OContainer\Scopes\Miscellaneous\EmpresaLogada;
+use Devguar\OContainer\Scopes\Miscellaneous\SetarEmpresa;
 use Illuminate\Database\Eloquent\Model as OriginalModel;
 use Illuminate\Support\Facades\Auth;
 
 abstract class Model extends OriginalModel
 {
-    protected $hasCompanyId = false;
     protected $fieldSearchable = [];
     protected $joins = [];
-
-//    /**
-//     * Model constructor.
-//     */
-//    public function __construct()
-//    {
-//        if (self::hasCompanyId()){
-//            static::addGlobalScope(new EmpresaLogada());
-//        }
-//
-//        parent::__construct();
-//    }
-
-    public function hasCompanyId()
-    {
-        return $this->hasCompanyId;
-    }
 
     public function getFieldsSearchable()
     {
@@ -45,19 +29,21 @@ abstract class Model extends OriginalModel
         return $this->joins;
     }
 
-
     public function save(array $options = [])
     {
-        if ($this->hasCompanyId){
+        if (static::getGlobalScope(new SetarEmpresa())){
             $user = Auth::user();
-            //print_r($user);
-            //print_r($options);
 
-            $this->empresa_id = $user->empresa_id;
+            if ($user){
+                $this->empresa_id = $user->empresa_id;
+            }else{
+                if (!$this->empresa_id){
+                    throw new InvalidConfigurationException("Impossível inserir registro.");
+                }
+            }
         }
-        // before save code
+
         parent::save();
-        // after save code
     }
 
     public static function formatInline($id){

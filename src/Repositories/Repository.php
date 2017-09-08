@@ -11,6 +11,7 @@ namespace Devguar\OContainer\Repositories;
 use Devguar\OContainer\Models\Model;
 use Devguar\OContainer\Scopes\Miscellaneous\EmpresaLogada;
 use Devguar\OContainer\Scopes\BootstrapTable;
+use Devguar\OContainer\Scopes\Miscellaneous\SetarEmpresa;
 use Illuminate\Database\Eloquent\Scope;
 
 abstract class Repository
@@ -19,6 +20,7 @@ abstract class Repository
     protected $joins = [];
 
     private $scopes = [];
+    private $ignoredScopes = [];
 
     public function __construct()
     {
@@ -51,8 +53,18 @@ abstract class Repository
         $this->scopes[get_class($scope)] = $scope;
     }
 
+    public function ignoreQueryScope(Scope $scope){
+        $this->ignoredScopes[get_class($scope)] = $scope;
+    }
+
     public function removeQueryScope(Scope $scope){
-        unset($this->scopes[get_class($scope)]);
+        if (isset($this->scopes[get_class($scope)])){
+            unset($this->scopes[get_class($scope)]);
+        }
+
+        if (isset($this->ignoredScopes[get_class($scope)])) {
+            unset($this->ignoredScopes[get_class($scope)]);
+        }
     }
 
     public function bootstrapTable(string $search = null, string $sort = null, string $order = null, int $limit = null, int $offset = null, int &$count){
@@ -78,18 +90,20 @@ abstract class Repository
         $className = $this->model();
         $model = new $className;
 
-        if ($model->hasCompanyId()){
-            $model->addGlobalScope(new EmpresaLogada());
+        if ($model::getGlobalScope(new SetarEmpresa())){
+            $this->addQueryScope(new EmpresaLogada());
         }
 
         return $model;
     }
 
-    private function makeBuilderWithScopes(){
-        $builder = $this->getModel()->newQuery();
+    public function makeBuilderWithScopes(){
+        $builder = $this->getModel()->withoutGlobalScopes($this->ignoredScopes)->newQuery();
 
         foreach ($this->scopes as $name => $scope) {
-            $builder->withGlobalScope($name, $scope);
+            if (!in_array($scope, $this->ignoredScopes)){
+                $builder->withGlobalScope($name, $scope);
+            }
         }
 
         return $builder;
