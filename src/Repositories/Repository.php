@@ -86,7 +86,7 @@ abstract class Repository
         return $result;
     }
 
-    public function getModel() : Model{
+    public function getModel() : \Illuminate\Database\Eloquent\Model{
         $className = $this->model();
         $model = new $className;
 
@@ -97,7 +97,7 @@ abstract class Repository
         return $model;
     }
 
-    public function makeBuilderWithScopes(){
+    private function makeBuilderWithScopes(){
         $builder = $this->getModel()->withoutGlobalScopes($this->ignoredScopes)->newQuery();
 
         foreach ($this->scopes as $name => $scope) {
@@ -109,11 +109,18 @@ abstract class Repository
         return $builder;
     }
 
+    public function getNewQuery(){
+        return $this->makeBuilderWithScopes();
+    }
+
     public function find($id){
-        return $this->makeBuilderWithScopes()->findOrFail($id);
+//        \DB::enableQueryLog();
+        $return = $this->getNewQuery()->find($id);
+//        dd (\DB::getQueryLog());
+        return $return;
     }
 
     public function all(){
-        return $this->makeBuilderWithScopes()->get();
+        return $this->getNewQuery()->get();
     }
 }
