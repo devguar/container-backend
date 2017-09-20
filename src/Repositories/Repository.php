@@ -72,7 +72,11 @@ abstract class Repository
         $this->addQueryScope(new BootstrapTable\Search($this, $search));
         $builder = $this->makeBuilderWithScopes();
 
+//        \DB::enableQueryLog();
+
         $count = $builder->get()->count();
+
+//        dd (\DB::getQueryLog());
 
         $this->addQueryScope(new BootstrapTable\Select($this));
         $this->addQueryScope(new BootstrapTable\Order($this, $sort, $order));
