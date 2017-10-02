@@ -47,4 +47,12 @@ class ConvertObjectArrayHelper
 
         return $array;
     }
+
+    public static function removeNullFieldsFromObject($object){
+        $object = (object) array_filter((array) $object, function ($val) {
+            return !is_null($val);
+        });
+
+        return $object;
+    }
 }
