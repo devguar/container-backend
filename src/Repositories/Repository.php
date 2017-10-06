@@ -8,7 +8,6 @@
 
 namespace Devguar\OContainer\Repositories;
 
-use Devguar\OContainer\Models\Model;
 use Devguar\OContainer\Scopes\Miscellaneous\EmpresaLogada;
 use Devguar\OContainer\Scopes\BootstrapTable;
 use Devguar\OContainer\Scopes\Miscellaneous\SetarEmpresa;
@@ -121,6 +120,11 @@ abstract class Repository
 //        \DB::enableQueryLog();
         $return = $this->getNewQuery()->find($id);
 //        dd (\DB::getQueryLog());
+        return $return;
+    }
+
+    public function findOrFail($id){
+        $return = $this->getNewQuery()->findOrFail($id);
         return $return;
     }
 
