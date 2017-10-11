@@ -5,6 +5,7 @@ namespace Devguar\OContainer\Controllers;
 use Devguar\OContainer\Exceptions\InvalidArgumentException;
 use Devguar\OContainer\Repositories\Repository;
 use Devguar\OContainer\Scopes\Miscellaneous\FiltroFalso;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Devguar\OContainer\Scopes\BootstrapTable;
 use Exception;
@@ -168,23 +169,27 @@ abstract class OContainerCrudController extends OContainerController
 
     public function delete($id)
     {
-        try{
+        try {
             $object = $this->repository->find($id);
 
             if (!isset($object->id))
                 throw new InvalidArgumentException("Registro não encontrada para exclusão.");
 
             return $this->doDelete($id);
-        }catch(Exception $e){
-            \Log::error(\Route::getCurrentRoute()->getActionName(), ['message' => $e->getMessage(), 'trace' => $e->getTrace()]);
-
+        }catch (QueryException $e){
             if ($e->getCode() == 23000){
-                $e->descricao = 'Não é possível excluir um registro que está sendo utilizado em outros lugares do sistema.';
+                $e->descricao = $this->messageException($e);
                 return view('errors.custom')->withException($e);
             }else{
                 return view('errors.custom')->withException($e);
             }
+        }catch(Exception $e){
+            return view('errors.custom')->withException($e);
         }
+    }
+
+    private function messageException(QueryException $e){
+        return 'Não é possível excluir um registro que está sendo utilizado em outros lugares do sistema.';
     }
 
     public function autocomplete(){
