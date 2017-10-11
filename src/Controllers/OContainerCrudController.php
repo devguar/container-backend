@@ -188,7 +188,7 @@ abstract class OContainerCrudController extends OContainerController
         }
     }
 
-    private function customMessageForeignKeyException(QueryException $e){
+    protected function customMessageForeignKeyException(QueryException $e){
         return 'Não é possível excluir um registro que está sendo utilizado em outros lugares do sistema.';
     }
 
