@@ -178,7 +178,7 @@ abstract class OContainerCrudController extends OContainerController
             return $this->doDelete($id);
         }catch (QueryException $e){
             if ($e->getCode() == 23000){
-                $e->descricao = $this->messageException($e);
+                $e->descricao = $this->customMessageForeignKeyException($e);
                 return view('errors.custom')->withException($e);
             }else{
                 return view('errors.custom')->withException($e);
@@ -188,7 +188,7 @@ abstract class OContainerCrudController extends OContainerController
         }
     }
 
-    private function messageException(QueryException $e){
+    private function customMessageForeignKeyException(QueryException $e){
         return 'Não é possível excluir um registro que está sendo utilizado em outros lugares do sistema.';
     }
 
