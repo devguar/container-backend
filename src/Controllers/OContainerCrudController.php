@@ -56,11 +56,11 @@ abstract class OContainerCrudController extends OContainerController
 
     public function index()
     {
-        return $this->loadViewIndex();
+        return $this->loadViewIndex()->withController($this);
     }
 
     public function loadViewIndex(){
-        return view($this->viewsfolder.'.index');
+        return view($this->viewsfolder.'.index')->withController($this);
     }
 
     public function getListContentByRepository($repository)
@@ -135,7 +135,7 @@ abstract class OContainerCrudController extends OContainerController
 
     public function loadViewCreate(){
         $object = $this->repository->getModel();
-        return view($this->viewsfolder.'.create-edit')->withObject($object);
+        return view($this->viewsfolder.'.create-edit')->withObject($object)->withController($this);
     }
 
     public function edit($id)
@@ -154,7 +154,7 @@ abstract class OContainerCrudController extends OContainerController
     }
 
     public function loadViewEdit($object){
-        return view($this->viewsfolder.'.create-edit')->withObject($object);
+        return view($this->viewsfolder.'.create-edit')->withObject($object)->withController($this);
     }
 
     abstract protected function doStore(Request $request, $id = null);
