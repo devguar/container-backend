@@ -39,7 +39,13 @@ abstract class OContainerController extends OriginalController
     public static function urlMethod($method = 'index',$object = null)
     {
         $path = static::pathMethod($method);
-        $url = \URL::action($path, $object);
+
+        if ($object){
+            $url = \URL::action($path, $object);
+        }else{
+            $url = \URL::action($path);
+        }
+
         return $url;
     }
 }
