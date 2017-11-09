@@ -48,4 +48,8 @@ abstract class OContainerController extends OriginalController
 
         return $url;
     }
+
+    public function loadView($view = null, $data = [], $mergeData = []){
+        return view($view, $data, $mergeData)->withController($this);
+    }
 }
