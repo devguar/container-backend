@@ -24,4 +24,14 @@ trait UuidForKey
             $model->{$model->getKeyName()} = (string)Uuid::uuid4();
         });
     }
+
+    /**
+     * Get the casts array.
+     *
+     * @return array
+     */
+    public function getCasts()
+    {
+        return $this->casts;
+    }
 }
