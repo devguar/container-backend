@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 
 abstract class Model extends OriginalModel
 {
+    use UuidForKey;
+
     protected $fieldSearchable = [];
     protected $joins = [];
 
