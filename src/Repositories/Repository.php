@@ -15,6 +15,10 @@ use Illuminate\Database\Eloquent\Scope;
 
 abstract class Repository
 {
+    const Repository_Operator_Like = "like";
+    const Repository_Operator_Equal = "=";
+    const Repository_Operator_Function = "function";
+
     protected $searchableFields = [];
     protected $joins = [];
 
@@ -28,36 +32,44 @@ abstract class Repository
 
     abstract public function model();
 
-    public function joins(){
+    public function joins()
+    {
         return $this->joins;
     }
 
-    public function searchableFields(){
+    public function searchableFields()
+    {
         return $this->searchableFields;
     }
 
-    public function rules($values, $id = null){
+    public function rules($values, $id = null)
+    {
         return [];
     }
 
-    public function boot(){
+    public function boot()
+    {
 
     }
 
-    private function reboot(){
+    private function reboot()
+    {
         $this->scopes = [];
     }
 
-    public function addQueryScope(Scope $scope){
+    public function addQueryScope(Scope $scope)
+    {
         $this->scopes[get_class($scope)] = $scope;
     }
 
-    public function ignoreQueryScope(Scope $scope){
+    public function ignoreQueryScope(Scope $scope)
+    {
         $this->ignoredScopes[get_class($scope)] = $scope;
     }
 
-    public function removeQueryScope(Scope $scope){
-        if (isset($this->scopes[get_class($scope)])){
+    public function removeQueryScope(Scope $scope)
+    {
+        if (isset($this->scopes[get_class($scope)])) {
             unset($this->scopes[get_class($scope)]);
         }
 
@@ -66,16 +78,17 @@ abstract class Repository
         }
     }
 
-    public function bootstrapTable(string $search = null, string $sort = null, string $order = null, int $limit = null, int $offset = null, int &$count){
+    public function bootstrapTable(string $search = null, string $sort = null, string $order = null, int $limit = null, int $offset = null, int &$count)
+    {
         $this->addQueryScope(new BootstrapTable\Joins($this));
         $this->addQueryScope(new BootstrapTable\Search($this, $search));
         $builder = $this->makeBuilderWithScopes();
 
-//        \DB::enableQueryLog();
+        //        \DB::enableQueryLog();
 
-        $count = $builder->get()->count();
+        $count = $builder->count();
 
-//        dd (\DB::getQueryLog());
+        //        dd (\DB::getQueryLog());
 
         $this->addQueryScope(new BootstrapTable\Select($this));
         $this->addQueryScope(new BootstrapTable\Order($this, $sort, $order));
@@ -89,22 +102,24 @@ abstract class Repository
         return $result;
     }
 
-    public function getModel() : \Illuminate\Database\Eloquent\Model{
+    public function getModel(): \Illuminate\Database\Eloquent\Model
+    {
         $className = $this->model();
         $model = new $className;
 
-        if ($model::getGlobalScope(new SetarEmpresa())){
+        if ($model::getGlobalScope(new SetarEmpresa())) {
             $this->addQueryScope(new EmpresaLogada());
         }
 
         return $model;
     }
 
-    private function makeBuilderWithScopes(){
+    private function makeBuilderWithScopes()
+    {
         $builder = $this->getModel()->withoutGlobalScopes($this->ignoredScopes)->newQuery();
 
         foreach ($this->scopes as $name => $scope) {
-            if (!in_array($scope, $this->ignoredScopes)){
+            if (!in_array($scope, $this->ignoredScopes)) {
                 $builder->withGlobalScope($name, $scope);
             }
         }
@@ -112,23 +127,33 @@ abstract class Repository
         return $builder;
     }
 
-    public function getNewQuery(){
+    public function getFieldFunction($name, &$operator)
+    {
+        $operator = 'like';
+        return $name;
+    }
+
+    public function getNewQuery()
+    {
         return $this->makeBuilderWithScopes();
     }
 
-    public function find($id){
-//        \DB::enableQueryLog();
+    public function find($id)
+    {
+        //        \DB::enableQueryLog();
         $return = $this->getNewQuery()->find($id);
-//        dd (\DB::getQueryLog());
+        //        dd (\DB::getQueryLog());
         return $return;
     }
 
-    public function findOrFail($id){
+    public function findOrFail($id)
+    {
         $return = $this->getNewQuery()->findOrFail($id);
         return $return;
     }
 
-    public function all(){
+    public function all()
+    {
         return $this->getNewQuery()->get();
     }
 }

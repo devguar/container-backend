@@ -33,23 +33,26 @@ class Search implements Scope {
                 $primeiroFiltro = true;
 
                 foreach ($fieldsSearchable as $field => $condition){
-                    if ($condition == "")
-                        $condition = "like";
+                    if ($condition == ""){
+                        $condition = Repository::Repository_Operator_Like;
+                    }
 
-                    if (strpos($field,'.') === false){
+                    if ($condition == Repository::Repository_Operator_Function){
+                        $field = \DB::raw($this->repository->getFieldFunction($field, $condition));
+                    }elseif (strpos($field,'.') === false){
                         $field = $table.'.'.$field;
                     }
 
                     if ($primeiroFiltro){
                         $primeiroFiltro = false;
 
-                        if ($condition == "like"){
+                        if ($condition == Repository::Repository_Operator_Like){
                             $queryContainer->where($field,$condition, '%'.$this->search.'%');
                         }else{
                             $queryContainer->where($field,$condition,$this->search);
                         }
                     }else{
-                        if ($condition == "like"){
+                        if ($condition == Repository::Repository_Operator_Like){
                             $queryContainer->orWhere($field,$condition, '%'.$this->search.'%');
                         }else{
                             $queryContainer->orWhere($field,$condition,$this->search);

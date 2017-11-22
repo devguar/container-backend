@@ -41,7 +41,7 @@ class Order implements Scope {
             $fieldsSearchable = $this->repository->searchableFields();
 
             foreach ($fieldsSearchable as $field => $condition) {
-                if (strpos($field,'.') === false){
+                if ((strpos($field,'.') === false) && ($condition != Repository::Repository_Operator_Function)){
                     $order = $table.'.'.$field;
                 }else{
                     $order = $field;

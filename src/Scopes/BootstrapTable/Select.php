@@ -33,11 +33,15 @@ class Select implements Scope {
             if ($field == "ativo")
                 $builder->addSelect($field.' as ativo');
             else{
-                if (strpos($field,'.') === false){
-                    $field = $table.'.'.$field;
-                }
+                if ($condition == Repository::Repository_Operator_Function){
+                    $builder->addSelect( \DB::raw('('.$this->repository->getFieldFunction($field, $condition).') as '.str_replace('.','_',$field)));
+                }else{
+                    if (strpos($field,'.') === false){
+                        $field = $table.'.'.$field;
+                    }
 
-                $builder->addSelect($field.' as '.str_replace('.','_',$field));
+                    $builder->addSelect( $field.' as '.str_replace('.','_',$field));
+                }
             }
         }
     }
