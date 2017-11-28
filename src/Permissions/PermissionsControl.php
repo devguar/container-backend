@@ -8,6 +8,8 @@
 
 namespace Devguar\OContainer\Permissions;
 
+use Devguar\OContainer\Util\BiscoiteiroHelper;
+
 class PermissionsControl
 {
     private static $errorMessage;
@@ -50,11 +52,31 @@ class PermissionsControl
             $rule = new $className;
             $rule->model = $model;
 
+            $cookieName = $className.'_empresa_id';
+            if ($model){
+                $cookieName .= '_'.$model->id;
+            }
+
+            if ($rule->cacheTime){
+                if (BiscoiteiroHelper::has($cookieName)){
+                    return BiscoiteiroHelper::get($cookieName);
+                }
+            }
+
             //echo 'regra: '.$className.'<br/>';
 
             if (!$rule->test()){
                 self::$errorMessage = $rule->getErrorMessage();
+
+                if ($rule->cacheTime) {
+                    BiscoiteiroHelper::set($cookieName, false, $rule->cacheTime);
+                }
+
                 return false;
+            }else{
+                if ($rule->cacheTime) {
+                    BiscoiteiroHelper::set($cookieName, true, $rule->cacheTime);
+                }
             }
         }
 

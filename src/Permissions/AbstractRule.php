@@ -13,6 +13,7 @@ abstract class AbstractRule
 {
     private $errorMessage = "Sem permissão para acessar esta funcionalidade.";
     public $model;
+    public $cacheTime = false;
 
     abstract public function test();
 

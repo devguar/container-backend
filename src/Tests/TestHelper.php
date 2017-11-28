@@ -17,7 +17,7 @@ class TestHelper
             return \Auth::user();
         }
 
-        $empresa = \App\Models\Configuracoes\Empresa::orderBy('id','desc')->first();
+        $empresa = \App\Models\Configuracoes\Empresa::orderBy('created_at','desc')->first();
         $user = $empresa->usuarios->first();
         return $user;
     }
