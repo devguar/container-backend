@@ -22,6 +22,10 @@ class BiscoiteiroHelper
         return $cookieItem;
     }
 
+    public static function setById($cookieItem, $id, $value, $minutes = 720){
+        self::set($cookieItem.'_'.$id, $value, $minutes);
+    }
+
     public static function set($cookieItem, $value, $minutes = 720){//12 horas de cache
         $cookieItem = self::makeCookeName($cookieItem);
         \Debugbar::info("Set cache: ".$cookieItem);
@@ -42,6 +46,10 @@ class BiscoiteiroHelper
         }
 
         return false;
+    }
+
+    public static function getById($cookieItem, $id){
+        return self::get($cookieItem.'_'.$id);
     }
 
     public static function get($cookieItem){
@@ -65,6 +73,8 @@ class BiscoiteiroHelper
     }
 
 
-
+    public static function destroyById($cookieItem, $id){
+        self::destroy($cookieItem.'_'.$id);
+    }
 
 }
