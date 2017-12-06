@@ -20,4 +20,9 @@ class NumbersHelper
         $number = number_format($number, $decimals,",",".");
         return $number;
     }
+
+    public static function convertDatabaseToVisualCurrency($number){
+        $number = static::convertDatabaseToVisual($number);
+        return 'R$'.$number;
+    }
 }
