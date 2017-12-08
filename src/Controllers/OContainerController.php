@@ -5,6 +5,7 @@ namespace Devguar\OContainer\Controllers;
 use App\Http\Controllers\Controller as OriginalController;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Jenssegers\Agent\Agent;
 
 abstract class OContainerController extends OriginalController
 {
@@ -51,5 +52,25 @@ abstract class OContainerController extends OriginalController
 
     public function loadView($view = null, $data = [], $mergeData = []){
         return view($view, $data, $mergeData)->withController($this);
+    }
+
+    public function modoNaoMobile(){
+        $agent = new Agent();
+        return !$agent->isMobile();
+    }
+
+    public function modoMobile(){
+        $agent = new Agent();
+        return $agent->isMobile();
+    }
+
+    public function modoTablet(){
+        $agent = new Agent();
+        return $agent->isTablet();
+    }
+
+    public function modoDesktop(){
+        $agent = new Agent();
+        return $agent->isDesktop();
     }
 }
