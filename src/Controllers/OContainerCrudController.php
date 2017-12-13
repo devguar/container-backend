@@ -200,6 +200,7 @@ abstract class OContainerCrudController extends OContainerController
             $this->repository->addQueryScope(new BootstrapTable\Select($this->getRepository()));
             $this->repository->addQueryScope(new BootstrapTable\Joins($this->getRepository()));
             $this->repository->addQueryScope(new BootstrapTable\Search($this->getRepository(), $termo));
+            $this->repository->addQueryScope(new BootstrapTable\Order($this->getRepository(),null,'asc'));
 
             $rows = $this->repository->all();
 
