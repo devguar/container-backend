@@ -51,7 +51,8 @@ abstract class OContainerController extends OriginalController
     }
 
     public function loadView($view = null, $data = [], $mergeData = []){
-        return view($view, $data, $mergeData)->withController($this);
+        $modal = (isset($_GET['modal']));
+        return view($view, $data, $mergeData)->withController($this)->withModalPage($modal);
     }
 
     public function modoNaoMobile(){
