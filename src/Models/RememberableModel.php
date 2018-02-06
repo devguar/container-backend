@@ -3,23 +3,26 @@
 namespace Devguar\OContainer\Models;
 
 use Devguar\OContainer\Util\BiscoiteiroHelper;
+use Illuminate\Support\Facades\App;
 
 trait RememberableModel
 {
     public static function bootRememberableModel()
     {
-        static::created(function ($model) {
-            static::forget($model->id);
-        });
-        static::updated(function ($model) {
-            static::forget($model->id);
-        });
-        static::deleted(function ($model) {
-            static::forget($model->id);
-        });
-        static::retrieved(function ($model) {
-            static::memorize($model);
-        });
+        if (!App::environment('testing')){
+            static::created(function ($model) {
+                static::forget($model->id);
+            });
+            static::updated(function ($model) {
+                static::forget($model->id);
+            });
+            static::deleted(function ($model) {
+                static::forget($model->id);
+            });
+            static::retrieved(function ($model) {
+                static::memorize($model);
+            });
+        }
     }
 
     public static function forget($id)
