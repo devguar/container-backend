@@ -27,7 +27,12 @@ trait TreatField
                 //Campo da tabela pai
                 $fieldObject->table = $table;
                 $fieldObject->field = $field[0];
-                $fieldObject->alias = $fieldObject->table.'_'.$fieldObject->field;
+
+                if ($fieldObject->field == "ativo"){
+                    $fieldObject->alias = $fieldObject->field;
+                }else{
+                    $fieldObject->alias = $fieldObject->table.'_'.$fieldObject->field;
+                }
             }else{
                 //Campo de outra tabela
                 $fieldObject->table = $field[0];
