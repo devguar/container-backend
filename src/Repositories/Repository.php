@@ -18,6 +18,7 @@ abstract class Repository
     const Repository_Operator_Like = "like";
     const Repository_Operator_Equal = "=";
     const Repository_Operator_Function = "function";
+    const Repository_Operator_Ignore = null;
 
     protected $searchableFields = [];
     protected $joins = [];

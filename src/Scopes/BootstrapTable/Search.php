@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
-class Search implements Scope {
+class Search implements Scope
+{
+    Use TreatField;
+
     private $repository;
     private $search;
 
@@ -33,29 +36,29 @@ class Search implements Scope {
                 $primeiroFiltro = true;
 
                 foreach ($fieldsSearchable as $field => $condition){
-                    if ($condition == ""){
-                        $condition = Repository::Repository_Operator_Like;
-                    }
+                    $field = $this->treatField($table, $field, $condition);
 
-                    if ($condition == Repository::Repository_Operator_Function){
-                        $field = \DB::raw($this->repository->getFieldFunction($field, $condition));
-                    }elseif (strpos($field,'.') === false){
-                        $field = $table.'.'.$field;
-                    }
-
-                    if ($primeiroFiltro){
-                        $primeiroFiltro = false;
-
-                        if ($condition == Repository::Repository_Operator_Like){
-                            $queryContainer->where($field,$condition, '%'.$this->search.'%');
+                    if ($field->operator != Repository::Repository_Operator_Ignore){
+                        if ($field->function){
+                            $fieldFull = \DB::raw($field->function);
                         }else{
-                            $queryContainer->where($field,$condition,$this->search);
+                            $fieldFull = $field->table.'.'.$field->field;
                         }
-                    }else{
-                        if ($condition == Repository::Repository_Operator_Like){
-                            $queryContainer->orWhere($field,$condition, '%'.$this->search.'%');
+
+                        if ($primeiroFiltro){
+                            $primeiroFiltro = false;
+
+                            if ($condition == Repository::Repository_Operator_Like){
+                                $queryContainer->where($fieldFull,$field->operator, '%'.$this->search.'%');
+                            }else{
+                                $queryContainer->where($fieldFull,$field->operator,$this->search);
+                            }
                         }else{
-                            $queryContainer->orWhere($field,$condition,$this->search);
+                            if ($condition == Repository::Repository_Operator_Like){
+                                $queryContainer->orWhere($fieldFull,$field->operator, '%'.$this->search.'%');
+                            }else{
+                                $queryContainer->orWhere($fieldFull,$field->operator,$this->search);
+                            }
                         }
                     }
                 }

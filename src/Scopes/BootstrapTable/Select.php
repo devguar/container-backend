@@ -13,7 +13,9 @@ use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
-class Select implements Scope {
+class Select implements Scope
+{
+    Use TreatField;
 
     private $repository;
 
@@ -30,18 +32,12 @@ class Select implements Scope {
         $fieldsSearchable = $this->repository->searchableFields();
 
         foreach ($fieldsSearchable as $field => $condition){
-            if ($field == "ativo")
-                $builder->addSelect($field.' as ativo');
-            else{
-                if ($condition == Repository::Repository_Operator_Function){
-                    $builder->addSelect( \DB::raw('('.$this->repository->getFieldFunction($field, $condition).') as '.str_replace('.','_',$field)));
-                }else{
-                    if (strpos($field,'.') === false){
-                        $field = $table.'.'.$field;
-                    }
+            $field = $this->treatField($table, $field, $condition);
 
-                    $builder->addSelect( $field.' as '.str_replace('.','_',$field));
-                }
+            if ($field->function){
+                $builder->addSelect(\DB::raw('('.$field->function.') as '.$field->alias));
+            }else{
+                $builder->addSelect( $field->table.'.'.$field->field.' as '.$field->alias);
             }
         }
     }

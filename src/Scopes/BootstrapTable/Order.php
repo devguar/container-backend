@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
-class Order implements Scope {
+class Order implements Scope
+{
+    Use TreatField;
+
     private $repository;
     private $campo;
     private $ordem;
@@ -22,7 +25,7 @@ class Order implements Scope {
     {
         $this->repository = $repository;
         $this->campo = $campo;
-        $this->ordem = $ordem;
+        $this->ordem = ($ordem ? $ordem : 'asc');
     }
 
     public function apply(Builder $builder, Model $model)
@@ -30,24 +33,13 @@ class Order implements Scope {
         $table = $model->getTable();
 
         if ($this->campo){
-            $field = $this->campo;
-
-            if ($this->ordem){
-                $builder->orderBy($field,$this->ordem);
-            }else{
-                $builder->orderBy($field,'asc');
-            }
+            $builder->orderBy($this->campo,$this->ordem);
         }else{
             $fieldsSearchable = $this->repository->searchableFields();
 
             foreach ($fieldsSearchable as $field => $condition) {
-                if ((strpos($field,'.') === false) && ($condition != Repository::Repository_Operator_Function)){
-                    $order = $table.'.'.$field;
-                }else{
-                    $order = $field;
-                }
-
-                $builder->orderBy($order, 'asc');
+                $field = $this->treatField($table, $field, $condition);
+                $builder->orderBy($field->alias, 'asc');
             }
         }
     }
