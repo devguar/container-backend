@@ -16,13 +16,13 @@ trait TreatField
     public function treatField($table, $field, $operator) : FieldObject{
         $fieldObject = new FieldObject();
 
-        $field = explode('.',$field);
-
         if ($operator == Repository::Repository_Operator_Function){
             $fieldObject->function = $this->repository->getFieldFunction($field, $operator);
             $fieldObject->alias = str_replace('.','_',$field);
             $fieldObject->operator = Repository::Repository_Operator_Like;
         }else{
+            $field = explode('.',$field);
+
             if (count($field) == 1){
                 //Campo da tabela pai
                 $fieldObject->table = $table;
