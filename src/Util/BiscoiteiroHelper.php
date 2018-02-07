@@ -16,8 +16,10 @@ class BiscoiteiroHelper
 {
 
     private static function makeCookeName($cookieItem){
-        $cookieItem = str_replace('empresa_id',\Auth::user()->empresa_id,$cookieItem);
-        $cookieItem = str_replace('user_id',\Auth::user()->id,$cookieItem);
+        if (\Auth::user()){
+            $cookieItem = str_replace('empresa_id',\Auth::user()->empresa_id,$cookieItem);
+            $cookieItem = str_replace('user_id',\Auth::user()->id,$cookieItem);
+        }
 
         return $cookieItem;
     }
