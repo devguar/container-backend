@@ -74,4 +74,8 @@ abstract class OContainerController extends OriginalController
         $agent = new Agent();
         return $agent->isDesktop();
     }
+
+    public function backToTheForm(){
+        return \Redirect::back()->withInput(\Input::all());
+    }
 }
