@@ -35,6 +35,10 @@ class BiscoiteiroHelper
         Cache::put($cookieItem, $value, $expiresAt);
     }
 
+    public static function hasById($cookieItem, $id){
+        return self::has($cookieItem.'_'.$id);
+    }
+
     public static function has($cookieItem)
     {
         $cookieItem = self::makeCookeName($cookieItem);
