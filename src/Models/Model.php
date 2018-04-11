@@ -8,14 +8,45 @@
 
 namespace Devguar\OContainer\Models;
 
+use Devguar\OContainer\Exceptions\InvalidCompanyException;
 use Devguar\OContainer\Exceptions\InvalidConfigurationException;
 use Devguar\OContainer\Scopes\Miscellaneous\EmpresaLogada;
 use Devguar\OContainer\Scopes\Miscellaneous\SetarEmpresa;
+use Devguar\OContainer\Tests\TestHelper;
 use Illuminate\Database\Eloquent\Model as OriginalModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
 
 abstract class Model extends OriginalModel
 {
+    private $defaultEmpresaId = null;
+
+    public function __construct(array $attributes = [])
+    {
+        $this->setDefaultEmpresa();
+        parent::__construct($attributes);
+    }
+
+    public function setDefaultEmpresa(){
+        if (App::environment('testing')){
+            $user = TestHelper::loggedUser();
+        }else {
+            $user = Auth::user();
+        }
+
+        if ($user) {
+            $this->setDefaultEmpresaId($user->empresa_id);
+        }
+    }
+
+    public function getDefaultEmpresaId(){
+        return $this->defaultEmpresaId;
+    }
+
+    public function setDefaultEmpresaId($empresaId){
+        $this->defaultEmpresaId = $empresaId;
+    }
+
     use UuidForKey;
 
     protected $fieldSearchable = [];
@@ -34,13 +65,11 @@ abstract class Model extends OriginalModel
     public function save(array $options = [])
     {
         if (static::getGlobalScope(new SetarEmpresa())){
-            $user = Auth::user();
-
-            if ($user){
-                $this->empresa_id = $user->empresa_id;
+            if ($this->defaultEmpresaId){
+                $this->empresa_id = $this->defaultEmpresaId;
             }else{
                 if (!$this->empresa_id){
-                    throw new InvalidConfigurationException("Impossível inserir registro.");
+                    throw new InvalidCompanyException();
                 }
             }
         }
