@@ -30,7 +30,6 @@ class BiscoiteiroHelper
 
     public static function set($cookieItem, $value, $minutes = 720){//12 horas de cache
         $cookieItem = self::makeCookeName($cookieItem);
-        \Debugbar::info("Set cache: ".$cookieItem);
         $expiresAt = Carbon::now()->addMinutes($minutes);
         Cache::put($cookieItem, $value, $expiresAt);
     }
@@ -42,13 +41,9 @@ class BiscoiteiroHelper
     public static function has($cookieItem)
     {
         $cookieItem = self::makeCookeName($cookieItem);
-        \Debugbar::info("Has Cache: " . $cookieItem);
 
         if (Cache::has($cookieItem)) {
-            \Debugbar::info("Has");
             return true;
-        }else{
-            \Debugbar::info("Hasn't");
         }
 
         return false;
@@ -60,14 +55,10 @@ class BiscoiteiroHelper
 
     public static function get($cookieItem){
         $cookieItem = self::makeCookeName($cookieItem);
-        \Debugbar::info("Get Cache: ".$cookieItem);
 
         if (Cache::has($cookieItem)){
             $value = Cache::get($cookieItem);
-            \Debugbar::info("Tem cache: ".$cookieItem);
             return $value;
-        }else{
-            \Debugbar::info("Nao tem cache: ".$cookieItem);
         }
 
         return null;
@@ -77,7 +68,6 @@ class BiscoiteiroHelper
         $cookieItem = self::makeCookeName($cookieItem);
         Cache::pull($cookieItem);
     }
-
 
     public static function destroyById($cookieItem, $id){
         self::destroy($cookieItem.'_'.$id);

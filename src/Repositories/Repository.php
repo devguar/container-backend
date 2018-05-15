@@ -149,8 +149,15 @@ abstract class Repository
 
     public function findOrFail($id)
     {
-        $return = $this->getNewQuery()->findOrFail($id);
-        return $return;
+        if (isset($this->getModel()->getDispatchesEvents()['saved'])){
+            $cacheName = get_class($this->getModel()).'_'.$id;
+
+            return cache()->remember($cacheName, 60, function () use($id) {
+                return $this->getNewQuery()->findOrFail($id);
+            });
+        }else{
+            return $this->getNewQuery()->findOrFail($id);
+        }
     }
 
     public function all()

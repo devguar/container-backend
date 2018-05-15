@@ -62,6 +62,10 @@ abstract class Model extends OriginalModel
         return $this->joins;
     }
 
+    public function getDispatchesEvents(){
+        return $this->dispatchesEvents;
+    }
+
     public function save(array $options = [])
     {
         if (static::getGlobalScope(new SetarEmpresa())){
