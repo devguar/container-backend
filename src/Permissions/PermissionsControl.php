@@ -52,9 +52,15 @@ class PermissionsControl
             $rule = new $className;
             $rule->model = $model;
 
-            $accept = cache()->remember($className.'_permission_user_'.\Auth::user()->id, 10, function() use($rule){
-                return $rule->test();
-            });
+            $user = \Auth::user();
+
+            if ($user){
+                $accept = cache()->remember($className.'_permission_user_'.$user->id, 10, function() use($rule){
+                    return $rule->test();
+                });
+            }else{
+                $accept = $rule->test();
+            }
 
             if (!$accept){
                 self::$errorMessage = $rule->getErrorMessage();
