@@ -52,31 +52,13 @@ class PermissionsControl
             $rule = new $className;
             $rule->model = $model;
 
-            $cookieName = $className.'_empresa_id';
-            if ($model){
-                $cookieName .= '_'.$model->id;
-            }
+            $accept = cache()->remember($className.'_permission_user_'.\Auth::user()->id, 10, function() use($rule){
+                return $rule->test();
+            });
 
-            if ($rule->cacheTime){
-                if (BiscoiteiroHelper::has($cookieName)){
-                    return BiscoiteiroHelper::get($cookieName);
-                }
-            }
-
-            //echo 'regra: '.$className.'<br/>';
-
-            if (!$rule->test()){
+            if (!$accept){
                 self::$errorMessage = $rule->getErrorMessage();
-
-                if ($rule->cacheTime) {
-                    BiscoiteiroHelper::set($cookieName, false, $rule->cacheTime);
-                }
-
                 return false;
-            }else{
-                if ($rule->cacheTime) {
-                    BiscoiteiroHelper::set($cookieName, true, $rule->cacheTime);
-                }
             }
         }
 
