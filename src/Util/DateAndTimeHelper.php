@@ -77,4 +77,12 @@ class DateAndTimeHelper
         return $dateTime->format('Y-m-d');
     }
 
+    public static function firstDayOfMonth(\DateTime $dateTime){
+        return $dateTime->modify('first day of this month');
+    }
+
+    public static function lastDayOfMonth(\DateTime $dateTime){
+        return $dateTime->modify('last day of this month');
+    }
+
 }
