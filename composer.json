@@ -15,10 +15,9 @@
     ],
     "require": {
         "php" : ">=5.5.0",
-		"maknz/slack": "^1.7",
-        "owen-it/laravel-auditing": "^4.1",
-        "ramsey/uuid": "^3.7",
-        "jenssegers/agent": "^2.6"
+		"maknz/slack": "*",
+        "owen-it/laravel-auditing": "*",
+        "jenssegers/agent": "*"
     },
     "require-dev": {
         
