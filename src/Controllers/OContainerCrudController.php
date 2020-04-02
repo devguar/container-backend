@@ -121,7 +121,7 @@ abstract class OContainerCrudController extends OContainerController
     }
 
     public function listActions($row){
-        return null;
+        return [];
     }
 
     public function create()
