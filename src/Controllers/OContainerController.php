@@ -29,16 +29,14 @@ abstract class OContainerController extends OriginalController
         return Auth::user();
     }
 
-    public static function pathMethod($method = 'index')
-    {
+    public static function pathMethod($method = 'index'){
         $controller = static::class;
-        $controller = str_replace('App\Http\Controllers\\','',$controller);
+        $controller = str_replace('App\Http\Controllers\\', '', $controller);
         $controller = $controller.'@'.$method;
         return $controller;
     }
 
-    public static function urlMethod($method = 'index',$object = null)
-    {
+    public static function urlMethod($method = 'index', $object = null){
         $path = static::pathMethod($method);
 
         if ($object){
