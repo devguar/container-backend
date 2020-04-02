@@ -1,11 +1,11 @@
 {
-    "name": "devguar/package-ocontainer-backend",
+    "name": "devguar/ocontainer-backend",
     "description": "Pacote backend OContainer",
     "keywords": [
         "devguar",
         "package-ocontainer-backend"
     ],
-    "homepage": "https://bitbucket.org/devguar/package-ocontainer-backend",
+    "homepage": "https://github.com/devguar/ocontainer-backend",
     "license": "MIT",
     "authors": [
         {
@@ -14,8 +14,8 @@
         }
     ],
     "require": {
-        "php" : ">=5.5.0",
-		"maknz/slack": "*",
+        "php" : ">=7.0",
+	"maknz/slack": "*",
         "owen-it/laravel-auditing": "*",
         "jenssegers/agent": "*"
     },
