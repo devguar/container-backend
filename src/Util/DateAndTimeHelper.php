@@ -64,14 +64,14 @@ class DateAndTimeHelper
     }
 
     //Converte Datetime Object em 14/06/2017
-    public static function convertDatetimeToVisual(\DateTime $dateTime){
+    public static function convertDatetimeToVisual(?\DateTime $dateTime){
         if ($dateTime == null) return null;
 
         return $dateTime->format("d/m/Y");
     }
 
     //Converte Datetime Object em 2017-06-14
-    public static function convertDatetimeToDatabase(\DateTime $dateTime){
+    public static function convertDatetimeToDatabase(?\DateTime $dateTime){
         if ($dateTime == null) return null;
 
         return $dateTime->format('Y-m-d');
